@@ -38,7 +38,10 @@ Whether you are a student learning OOP for the first time or reviewing for exams
 | 5  | Inheritance (All Types)        | `lab05_inheritance/`       |
 | 6  | Templates (Function & Class)   | `lab06_templates/`         |
 | —  | Assignments                    | `assignments/`             |
-
+| 7 | Friend Functions & Static Members | `friend`, `this`, `static` |
+| 8 | Copy Constructor & Binary Operator Overloading | shallow/deep copy, `operator+` |
+| 9 | Advanced Operator Overloading | unary `++`/`--`, cast operator, `operator()` |
+| 10 | File Handling | `ofstream`, `ifstream`, `fstream`, `eof()`, `seekg/seekp` |
 ---
 
 ##  Folder Structure
@@ -70,8 +73,22 @@ cpp-oop-lab/
 │
 ├── assignments/
 │   ├── gpa_calculator.cpp            # GPA calculator using classes
-│   └── assignment_templates.cpp      # Template assignment: smallest, reverse, max
+│   └── assignment_templates.cpp      # Template assignment: smallest, reverse, max├── |||_friend_static/
+│   ├── prelab_friend_functions.cpp          # Complex number add + Prime sum (friend fn)
+│   └── inlab_friend_class_static_this.cpp   # Integer array, this pointer, friend class, VICOBA
 │
+├──_copy_constructor_operator_overloading/
+│   ├── prelab_shallow_deep_copy.cpp         # Shallow vs deep copy — Rectangle class
+│   └── inlab_operator_overloading.cpp       # Student vector, Complex ops, Matrix, Polynomial
+│
+├── _operator_overloading_advanced/
+│   └── advanced_operator_overloading.cpp    # BigInt, GPA (dynamic memory), cast, function call
+│
+├──_file_handling/
+│   ├── file_handling_complete.cpp           # All 9 core file handling programs
+│   └── file_handling_assignments.cpp        # 7 assignment programs
+│
+├── assignments/                             # (reserved for future assignment files)
 └── README.md
 ```
 
@@ -126,34 +143,34 @@ cpp-oop-lab/
 | `gpa_calculator.cpp` | Full GPA calculator. Takes marks + credit hours for 5 subjects, converts to grade points, and computes cumulative GPA. |
 | `assignment_templates.cpp` | Template assignment: find smallest of 3 mixed-type values, reverse display, find max in a typed array. |
 
+### Lab 05 — Friend Functions & Static Members
+
+| File | What it does |
+|------|-------------|
+| `prelab_friend_functions.cpp` | Two programs: (1) Adds two complex numbers using a friend function. (2) Checks if a number can be expressed as sum of two prime numbers using a friend function. |
+| `inlab_friend_class_static_this.cpp` | Four programs: (1) `IntArray` class with friend functions to find largest, smallest, repeated elements, and sort. (2) `this` pointer demo — identifies which object invoked a function. (3) Friend class: Square is friend of Rectangle. (4) VICOBA microfinance account with static interest rate and static member function. |
+
+### Lab 06 — Copy Constructor & Operator Overloading
+
+| File | What it does |
+|------|-------------|
+| `prelab_shallow_deep_copy.cpp` | Side-by-side demo of shallow copy (dangerous — shared memory) and deep copy (safe — independent memory) using a Rectangle class with pointer members. |
+| `inlab_operator_overloading.cpp` | Four programs: (1) Student vector with copy constructor. (2) Complex number class with all 4 operators overloaded (intentionally swapped per lab spec). (3) Matrix class with overloaded `+`, `-`, `*`. (4) Polynomial class with deep copy, `operator+`, `operator-`, and `[]` accessor. |
+
+### Lab 07 — Advanced Operator Overloading
+
+| File | What it does |
+|------|-------------|
+| `advanced_operator_overloading.cpp` | Five programs: (1) `BigInt` class with unary prefix `++` and `--` for arbitrary-size integers. (2) Dynamic memory — student GPA stored in heap array with proper `delete[]`. (3) Complex class with cast operator converting object to string `"a + bi"`. (4) Polynomial class with function call `operator()` to evaluate at a given x. (5) Matrix2D class with cast operator to convert 2D matrix to 1D vector. |
+
+### Lab 08 — File Handling
+
+| File | What it does |
+|------|-------------|
+| `file_handling_complete.cpp` | All 9 core programs: write/read integers, write/read strings, count vowels with `eof()`, combined create-and-read, file copy, word/line/size counter with `seekg`/`tellg`, student records. |
+| `file_handling_assignments.cpp` | 7 assignment programs: book records, read/write demo, append mode (`ios::app`), merge two files, count digits/alphabets/spaces, count word occurrence, student detail records. |
 ---
 
-##  How to Run
-
-### Prerequisites
-- A C++ compiler: [g++](https://gcc.gnu.org/) (Linux/Mac) or [MinGW](https://www.mingw-w64.org/) (Windows)
-- Or an IDE: [VS Code](https://code.visualstudio.com/), [Dev-C++](https://www.bloodshed.net/), [Code::Blocks](http://www.codeblocks.org/)
-
-### Compile and Run (Terminal)
-
-```bash
-# Step 1: Navigate to the file's folder
-cd lab01_constructors
-
-# Step 2: Compile with g++
-g++ task1_department.cpp -o task1_department
-
-# Step 3: Run the output
-./task1_department       # Linux/Mac
-task1_department.exe     # Windows
-```
-
-### Using VS Code
-1. Install the **C/C++ Extension** by Microsoft.
-2. Open any `.cpp` file.
-3. Press `Ctrl + Shift + B` to build, then run the terminal.
-
----
 
 ##  Key Concepts Explained
 
@@ -208,11 +225,96 @@ T add(T a, T b) { return a + b; }
 - [ ] Create a simple **makefile** to build all programs at once
 - [ ] Add expected output comments at the bottom of each file
 
+### Friend Function
+```cpp
+class MyClass {
+    private: int x;
+    friend void showX(MyClass obj);   // declared inside class
+};
+void showX(MyClass obj) { cout << obj.x; }  // defined outside — can access private!
+```
+
+### `this` Pointer
+```cpp
+void print() {
+    cout << "Object at: " << this << endl;   // 'this' = address of calling object
+    this->x = 10;                            // same as: x = 10;
+}
+```
+
+### Static Member
+```cpp
+class Counter {
+    static int count;   // ONE copy shared by all objects
+public:
+    Counter() { count++; }
+    static int getCount() { return count; }  // no 'this' pointer
+};
+int Counter::count = 0;   // define outside class
+// Usage: Counter::getCount();
+```
+
+### Copy Constructor
+```cpp
+MyClass(const MyClass& obj) {
+    ptr = new int(*obj.ptr);   //  DEEP — new memory, copied value
+    // ptr = obj.ptr;          //  SHALLOW — shared memory, dangerous!
+}
+```
+
+### Operator Overloading
+```cpp
+Complex operator+(const Complex& obj) {
+    return Complex(real + obj.real, imag + obj.imag);
+}
+// Usage: Complex c3 = c1 + c2;
+```
+
+### Unary Operator
+```cpp
+void operator++()    { ++value; }        // prefix  ++obj
+void operator++(int) { value++; }        // postfix  obj++
+```
+
+### Cast Operator
+```cpp
+operator string() const {
+    return to_string(real) + " + " + to_string(imag) + "i";
+}
+// Usage: string s = myComplexObj;   // automatic conversion
+```
+
+### File Handling
+```cpp
+// Write
+ofstream out("file.txt");
+out << "Hello World";
+out.close();
+
+// Read
+ifstream in("file.txt");
+string line;
+while (getline(in, line)) cout << line;
+in.close();
+
+// Append (don't overwrite)
+ofstream app("file.txt", ios::app);
+app << "New line added";
+app.close();
+```
+
+### Dynamic Memory
+```cpp
+int* arr = new int[n];    // allocate on heap
+// use arr...
+delete[] arr;             //  MUST free memory!
+arr = nullptr;            // good practice
+```
 ---
 
 ##  Author
 
-** Shehroz Sultani**  
+ Shehroz Sultani 
 BS-IT — Session 2025–2029  
 Punjab University Gujranwala Campus  
 Course: Object-Oriented Programming (OOP)
