@@ -1,0 +1,43 @@
+/*
+ * Task 1: Department Class — Constructor Overloading
+ * -------------------------------------------------------
+ * Concept: Constructor Overloading
+ * When no argument is given → default message is shown.
+ * When a department name is given → that name is displayed.
+ * This is done using two constructors with different parameters.
+ */
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Department {
+private:
+    string deptName;  // Stores the department name
+
+public:
+    // Default constructor — called when no argument is passed
+    Department() {
+        deptName = "I am not enrolled in any Department";
+    }
+
+    // Parameterized constructor — called when a name is passed
+    Department(string name) {
+        deptName = name;
+    }
+
+    // Display function to print department name
+    void display() {
+        cout << deptName << endl;
+    }
+};
+
+int main() {
+    Department student1;               // Calls default constructor
+    student1.display();                // Output: I am not enrolled in any Department
+
+    Department student2("Computer Science");  // Calls parameterized constructor
+    student2.display();               // Output: Computer Science
+
+    return 0;
+}
