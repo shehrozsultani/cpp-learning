@@ -1,0 +1,175 @@
+/*
+ * Lab Task 1: C++ Fundamentals
+ * -------------------------------------------------------
+ * A collection of beginner-level C++ programs covering:
+ *   - Task 001: First C++ Program (Hello World)
+ *   - Task 002: Find the Middle Number of Three Inputs
+ *   - Task 003: Count Words, Spaces, and Characters in a String
+ *   - Task 004: Palindrome String Check
+ *   - Task 005: Square vs Rectangle Detection using a Class
+ *   - Task 006: Buggy Student Class + Corrected Version
+ */
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+// ========================================================
+// Task 001: Hello World
+// ========================================================
+void task001() {
+    cout << "This is my first C++ Program" << endl;
+}
+
+
+// ========================================================
+// Task 002: Find the Middle Number
+// ========================================================
+// Given 3 numbers, find which one is the middle value.
+
+void task002() {
+    int a, b, c;
+    cout << "Enter 3 numbers: ";
+    cin >> a >> b >> c;
+
+    // Check which number lies between the other two
+    if      ((a < b && a > c) || (a > b && a < c)) cout << "Middle: " << a << endl;
+    else if ((b > a && b < c) || (b < a && b > c)) cout << "Middle: " << b << endl;
+    else                                            cout << "Middle: " << c << endl;
+}
+
+
+// ========================================================
+// Task 003: Word, Space, Character Count
+// ========================================================
+
+void task003() {
+    string str;
+    int words = 1, spaces = 0, charc = 0;
+
+    cout << "Enter a string: ";
+    getline(cin, str);
+
+    for (int i = 0; i < (int)str.length(); i++) {
+        if (str[i] == ' ') {
+            spaces++;
+            words++;  // Each space starts a new word
+        }
+        charc++;
+    }
+
+    cout << "Words:      " << words           << endl;
+    cout << "Spaces:     " << spaces          << endl;
+    cout << "Characters: " << charc - spaces  << endl;  // Exclude spaces
+}
+
+
+// ========================================================
+// Task 004: Palindrome Check
+// ========================================================
+// A palindrome reads the same forwards and backwards. e.g., "racecar"
+
+void task004() {
+    string a;
+    cout << "Enter a string: ";
+    cin >> a;
+
+    int start   = 0;
+    int end     = a.length() - 1;
+    bool isPalin = true;
+
+    while (start < end) {
+        if (a[start] != a[end]) {
+            isPalin = false;
+            break;
+        }
+        start++;
+        end--;
+    }
+
+    cout << (isPalin ? "Palindrome!" : "Not a palindrome.") << endl;
+}
+
+
+// =========================================================
+// Task 005: Square vs Rectangle using a Class
+// ========================================================
+
+class Geometry {
+public:
+    int l, b;
+
+    void shape() {
+        if (l == b) cout << "Square"    << endl;
+        else         cout << "Rectangle" << endl;
+    }
+};
+
+void task005() {
+    Geometry g;
+    cout << "Enter length: "; cin >> g.l;
+    cout << "Enter breadth: "; cin >> g.b;
+    g.shape();
+}
+
+
+// ========================================================
+// Task 006: Buggy Student Class — Errors & Corrections
+// ========================================================
+/*
+ * ORIGINAL BUGGY CODE (do NOT compile this):
+ *
+ * #include <iostream>
+ * class Student {
+ * public:
+ *     string name;              // Error 1: 'string' not recognized — missing #include<string> and 'using namespace std'
+ *     string rollNo;
+ *     string subjects[5];
+ * }                              // Error 2: Missing semicolon (;) after class definition
+ * main()                         // Error 3: main() must return int → int main()
+ * {
+ *     Student std1, std2;
+ *     Student.name = "Name";     // Error 4: Cannot use class name — use object name: std1.name
+ *     std2.name = std1.name;
+ *     std2.rollNo = std1.rollNo;
+ *     std2.subjects = std1.subjects; // Error 5: Arrays cannot be assigned with =, use a loop
+ *     cout << std2 << endl;          // Error 6: cout does not know how to print a whole object
+ * }
+ */
+
+//  CORRECTED VERSION:
+class Student {
+public:
+    string name;
+    string rollNo;
+    string subjects[5];
+
+    void copyFrom(const Student& src) {
+        name   = src.name;
+        rollNo = src.rollNo;
+        for (int i = 0; i < 5; i++) {
+            subjects[i] = src.subjects[i];   //  Correct way to copy an array
+        }
+    }
+
+    void display() {
+        cout << "Name:   " << name   << endl;
+        cout << "RollNo: " << rollNo << endl;
+    }
+};
+
+
+// ========================================================
+// MAIN
+// ========================================================
+
+int main() {
+    cout << "=== Task 001 ===" << endl; task001();
+    cout << "\n=== Task 002 ===" << endl; task002();
+    cout << "\n=== Task 003 ===" << endl;
+    cin.ignore(); task003();
+    cout << "\n=== Task 004 ===" << endl; task004();
+    cout << "\n=== Task 005 ===" << endl; task005();
+
+    return 0;
+}
