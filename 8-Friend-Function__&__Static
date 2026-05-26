@@ -190,7 +190,7 @@ private:
 public:
     // Constructor takes a Square object and uses its private 'side'
     Rectangle(Square& sq) {
-        height = sq.side;   // ✅ Allowed — Rectangle is friend of Square
+        height = sq.side;   //  Allowed — Rectangle is friend of Square
         width  = sq.side;
     }
 
