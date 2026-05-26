@@ -1,0 +1,299 @@
+/*
+ * =====================================================
+ * Task 01: Integer Array  — friend functions (largest, smallest, repeated, sort, destructor)
+ * Task 02: Object Invocation — 'this' pointer to identify which object called the function
+ * Task 03: Friend Class  — Square is a friend of Rectangle
+ * Post-Lab: VicobaAccount — static interest rate + loan repayment calculator
+ */
+
+#include <iostream>
+#include <algorithm>   // For sort()
+#include <string>
+using namespace std;
+
+
+// ============================================================
+// Task 01: Integer Array with Friend Functions
+// ============================================================
+/*
+ * KEY CONCEPT — Friend Function with Arrays:
+ *   The class 'IntArray' holds a fixed-size integer array.
+ *   Friend functions can read/modify the private array directly.
+ *   A destructor sets all elements to 0 when object is destroyed.
+ */
+
+class IntArray {
+private:
+    static const int SIZE = 6;
+    int arr[SIZE];
+
+public:
+    // Constructor: initialize array with hardcoded values
+    IntArray() {
+        int init[] = {5, 3, 9, 3, 1, 7};
+        for (int i = 0; i < SIZE; i++) arr[i] = init[i];
+    }
+
+    // Destructor: sets all elements to 0
+    ~IntArray() {
+        cout << "\n[Destructor called] Setting all elements to 0." << endl;
+        for (int i = 0; i < SIZE; i++) arr[i] = 0;
+    }
+
+    void display() {
+        cout << "Array: ";
+        for (int i = 0; i < SIZE; i++) cout << arr[i] << " ";
+        cout << endl;
+    }
+
+    // Friend function declarations
+    friend int findLargest(IntArray& a);
+    friend int findSmallest(IntArray& a);
+    friend void findRepeated(IntArray& a);
+    friend void sortAscending(IntArray& a);
+};
+
+// Find largest element
+int findLargest(IntArray& a) {
+    int max = a.arr[0];
+    for (int i = 1; i < IntArray::SIZE; i++)
+        if (a.arr[i] > max) max = a.arr[i];
+    return max;
+}
+
+// Find smallest element
+int findSmallest(IntArray& a) {
+    int min = a.arr[0];
+    for (int i = 1; i < IntArray::SIZE; i++)
+        if (a.arr[i] < min) min = a.arr[i];
+    return min;
+}
+
+// Find repeated elements
+void findRepeated(IntArray& a) {
+    cout << "Repeated elements: ";
+    bool found = false;
+    for (int i = 0; i < IntArray::SIZE; i++) {
+        for (int j = i + 1; j < IntArray::SIZE; j++) {
+            if (a.arr[i] == a.arr[j]) {
+                cout << a.arr[i] << " ";
+                found = true;
+                break;
+            }
+        }
+    }
+    if (!found) cout << "None";
+    cout << endl;
+}
+
+// Sort in ascending order
+void sortAscending(IntArray& a) {
+    sort(a.arr, a.arr + IntArray::SIZE);
+}
+
+void task01_integerArray() {
+    cout << "===== Task 01: Integer Array =====" << endl;
+    IntArray obj;
+    obj.display();
+    cout << "Largest:  " << findLargest(obj)  << endl;
+    cout << "Smallest: " << findSmallest(obj) << endl;
+    findRepeated(obj);
+    sortAscending(obj);
+    cout << "After sorting: "; obj.display();
+    // Destructor will auto-run when obj goes out of scope
+}
+
+
+// ============================================================
+// Task 02: Object Invocation — 'this' Pointer
+// ============================================================
+/*
+ * KEY CONCEPT — 'this' Pointer:
+ *   Inside any member function, 'this' is a hidden pointer that
+ *   holds the address of the object that called the function.
+ *   'this' lets us identify WHICH object invoked the function.
+ *
+ *   Usage: this->member   OR   (*this).member
+ *   To print the address: cout << this
+ */
+
+class pntr_obj {
+private:
+    int  roll_no;
+    char name[30];
+
+public:
+    // Set data for this object
+    void set_data(int r, const char* n) {
+        roll_no = r;
+        // Copy name manually (no strcpy to avoid header dependency)
+        int i = 0;
+        while (n[i] != '\0' && i < 29) { name[i] = n[i]; i++; }
+        name[i] = '\0';
+    }
+
+    // Use 'this' to show which object called this function
+    void print() {
+        cout << "Object at address " << this
+             << " invoked print()." << endl;
+        cout << "  Roll No: " << roll_no
+             << " | Name: " << name << endl;
+    }
+};
+
+void task02_thisPointer() {
+    cout << "\n===== Task 02: Object Invocation (this pointer) =====" << endl;
+    pntr_obj obj1, obj2, obj3;
+    obj1.set_data(101, "Ali");
+    obj2.set_data(102, "Sara");
+    obj3.set_data(103, "Umar");
+
+    obj1.print();
+    obj2.print();
+    obj3.print();
+}
+
+
+// ============================================================
+// Task 03: Friend Class — Square is friend of Rectangle
+// ============================================================
+/*
+ * KEY CONCEPT — Friend Class:
+ *   When you declare an entire class as 'friend', ALL its member
+ *   functions can access the private members of the host class.
+ *
+ * Here:
+ *   Square has private member 'side'.
+ *   Rectangle is declared as a friend of Square.
+ *   So Rectangle's member functions can access Square's 'side'.
+ *   Rectangle then uses 'side' as both height and width to compute area.
+ */
+
+// Forward declaration needed (Rectangle is used inside Square before defined)
+class Rectangle;
+
+class Square {
+private:
+    int side;  // Private — accessible only by friends
+
+public:
+    Square(int s) : side(s) {}
+
+    // Declare Rectangle as a friend class
+    friend class Rectangle;
+};
+
+class Rectangle {
+private:
+    int height, width;
+
+public:
+    // Constructor takes a Square object and uses its private 'side'
+    Rectangle(Square& sq) {
+        height = sq.side;   // ✅ Allowed — Rectangle is friend of Square
+        width  = sq.side;
+    }
+
+    int area() {
+        return height * width;
+    }
+
+    void display() {
+        cout << "Rectangle (from Square): Height=" << height
+             << " | Width=" << width
+             << " | Area=" << area() << endl;
+    }
+};
+
+void task03_friendClass() {
+    cout << "\n===== Task 03: Friend Class (Square → Rectangle) =====" << endl;
+    Square sq(7);
+    Rectangle rect(sq);
+    rect.display();
+}
+
+
+// ============================================================
+// Post-Lab: VicobaAccount — Static Interest Rate
+// ============================================================
+/*
+ * KEY CONCEPT — static Data Member:
+ *   A static member is SHARED across all objects of the class.
+ *   Only ONE copy exists, no matter how many objects are created.
+ *   Declared with 'static' inside the class, defined OUTSIDE.
+ *
+ * KEY CONCEPT — static Member Function:
+ *   Can be called without creating an object: ClassName::function()
+ *   Can only access static data members.
+ */
+
+class VicobaAccount {
+private:
+    double amountBorrowed;    // Loan amount
+    int    loanDuration;      // Duration in years
+    static double annualInterestRate;  // Shared across all accounts
+
+public:
+    // Constructor: takes loan amount and duration
+    VicobaAccount(double amount, int years)
+        : amountBorrowed(amount), loanDuration(years) {}
+
+    // Static function to change the interest rate for ALL accounts
+    static void setInterestRate(double rate) {
+        annualInterestRate = rate;
+        cout << "Interest rate updated to: " << annualInterestRate << "%" << endl;
+    }
+
+    // Calculate total repayment using simple interest
+    // Formula: Total = Principal + (Principal × Rate × Time) / 100
+    double calculateRepayment() {
+        double interest = (amountBorrowed * annualInterestRate * loanDuration) / 100.0;
+        return amountBorrowed + interest;
+    }
+
+    // Getters and setters
+    double getAmount()   const { return amountBorrowed;   }
+    int    getDuration() const { return loanDuration;     }
+    void   setAmount(double a) { amountBorrowed = a;      }
+    void   setDuration(int d)  { loanDuration   = d;      }
+
+    void display() {
+        cout << "Loan Amount:    " << amountBorrowed    << " TZS" << endl;
+        cout << "Duration:       " << loanDuration      << " years" << endl;
+        cout << "Interest Rate:  " << annualInterestRate << "%" << endl;
+        cout << "Total Repay:    " << calculateRepayment() << " TZS" << endl;
+    }
+};
+
+// Define static member OUTSIDE the class
+double VicobaAccount::annualInterestRate = 10.0;
+
+void postlab_vicobaAccount() {
+    cout << "\n===== Post-Lab: VicobaAccount =====" << endl;
+
+    VicobaAccount acc1(500000, 2);
+    VicobaAccount acc2(300000, 3);
+
+    cout << "\n--- Account 1 ---" << endl; acc1.display();
+    cout << "\n--- Account 2 ---" << endl; acc2.display();
+
+    // Change rate for ALL accounts using static function
+    VicobaAccount::setInterestRate(15.0);
+
+    cout << "\n--- After rate change ---" << endl;
+    cout << "\n--- Account 1 ---" << endl; acc1.display();
+    cout << "\n--- Account 2 ---" << endl; acc2.display();
+}
+
+
+// ============================================================
+// MAIN
+// ============================================================
+
+int main() {
+    task01_integerArray();
+    task02_thisPointer();
+    task03_friendClass();
+    postlab_vicobaAccount();
+    return 0;
+}
