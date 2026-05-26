@@ -1,0 +1,83 @@
+/*
+ * Assignment: GPA Calculator
+ * -------------------------------------------------------
+ * Concept: Classes with private members + computation logic
+ * - Accepts marks and credit hours for 5 subjects.
+ * - Computes grade points using a grading scale.
+ * - Calculates GPA using: GPA = Sum(GP × Credit) / Sum(Credits)
+ *
+ * Grade Point Scale:
+ *   >= 85 → 4.0
+ *   >= 80 → 3.7
+ *   >= 75 → 3.3
+ *   >= 70 → 3.0
+ *   >= 65 → 2.7
+ *   >= 61 → 2.3
+ *   >= 58 → 2.0
+ *   >= 55 → 1.7
+ *   >= 50 → 1.0
+ *   < 50  → 0.0 (Fail)
+ */
+
+#include <iostream>
+using namespace std;
+
+class Result {
+private:
+    char  name[20];
+    float marks[5];      // Marks for each subject
+    float gp[5];         // Grade points for each subject
+    float acredit[5];    // Credit hours for each subject
+    float acxm[5];       // GP × Credit for each subject
+    float totalCredit = 0;
+    float totalCxM    = 0;
+    float gpa;
+
+    // Convert marks to grade point
+    float getGradePoint(float m) {
+        if (m >= 85) return 4.0f;
+        if (m >= 80) return 3.7f;
+        if (m >= 75) return 3.3f;
+        if (m >= 70) return 3.0f;
+        if (m >= 65) return 2.7f;
+        if (m >= 61) return 2.3f;
+        if (m >= 58) return 2.0f;
+        if (m >= 55) return 1.7f;
+        if (m >= 50) return 1.0f;
+        return 0.0f;  // Below 50 = fail
+    }
+
+public:
+    void set() {
+        cout << "Enter student name: "; cin >> name;
+
+        // Input marks and compute grade points
+        cout << "\nEnter marks for 5 subjects:" << endl;
+        for (int i = 0; i < 5; i++) {
+            cout << "Subject " << i + 1 << ": "; cin >> marks[i];
+            gp[i] = getGradePoint(marks[i]);
+            cout << "Grade Point: " << gp[i] << endl;
+        }
+
+        // Input credit hours
+        cout << "\nEnter credit hours for 5 subjects:" << endl;
+        for (int i = 0; i < 5; i++) {
+            cout << "Subject " << i + 1 << " credits: "; cin >> acredit[i];
+            totalCredit += acredit[i];
+            acxm[i]      = gp[i] * acredit[i];  // GP × Credit
+            totalCxM    += acxm[i];
+        }
+    }
+
+    void get() {
+        gpa = totalCxM / totalCredit;  // GPA formula
+        cout << "\nGPA of " << name << ": " << gpa << endl;
+    }
+};
+
+int main() {
+    Result s1;
+    s1.set();
+    s1.get();
+    return 0;
+}

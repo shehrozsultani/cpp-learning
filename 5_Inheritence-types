@@ -1,0 +1,182 @@
+/*
+ *  Inheritance in C++
+ * -------------------------------------------------------
+ * Concept: Inheritance allows a class (child/derived) to
+ * inherit properties and behaviors from another class (parent/base).
+ *
+ * Types covered in this file:
+ *   1. Public Inheritance
+ *   2. Private Inheritance
+ *   3. Multiple Inheritance
+ *   4. Multilevel Inheritance
+ *
+ * Access specifier rules in inheritance:
+ * ┌────────────┬─────────────┬──────────────────────────────────┐
+ * │ In Base    │ Inheritance │ Access in Derived                │
+ * ├────────────┼─────────────┼──────────────────────────────────┤
+ * │ public     │ public      │ public                           │
+ * │ protected  │ public      │ protected                        │
+ * │ private    │ public      │ NOT accessible                   │
+ * │ public     │ private     │ private (inaccessible outside)   │
+ * │ protected  │ private     │ private (accessible inside only) │
+ * └────────────┴─────────────┴──────────────────────────────────┘
+ */
+
+#include <iostream>
+using namespace std;
+
+
+// ========================================================
+// 1. PUBLIC INHERITANCE
+// ========================================================
+
+class A_Public {
+private:
+    int a;           // Not accessible in derived class
+protected:
+    int b;           // Accessible in derived class
+public:
+    int c;
+    void setA() { a = 50; }
+};
+
+class B_Public : public A_Public {
+private:
+    int x;
+protected:
+    int y;
+public:
+    int z;
+    void setValues() {
+        x = 10;     // own private
+        y = 20;     // own protected
+        b = 30;     //  protected from A_Public
+        // a = 55;  //  private in A — NOT allowed
+    }
+    void display() {
+        cout << "x=" << x << " y=" << y << " b=" << b << endl;
+    }
+};
+
+void demo_public_inheritance() {
+    cout << "\n--- Public Inheritance ---" << endl;
+    B_Public O1;
+    O1.setA();       //  public in A
+    O1.setValues();
+    O1.display();
+    O1.c = 200;      //  public stays public
+    O1.z = 100;
+    cout << "c=" << O1.c << " z=" << O1.z << endl;
+}
+
+
+// ========================================================
+// 2. MULTIPLE INHERITANCE
+// ========================================================
+// A child class inherits from MORE THAN ONE parent class.
+
+class Father {
+private:
+    int a;
+public:
+    void setA() { cout << "Enter a: "; cin >> a; }
+    void getA() { cout << "a = " << a << endl;    }
+};
+
+class Mother {
+private:
+    int b;
+public:
+    void setB() { cout << "Enter b: "; cin >> b; }
+    void getB() { cout << "b = " << b << endl;    }
+};
+
+// Child inherits from BOTH Father and Mother
+class Child : public Father, public Mother {
+private:
+    int c;
+public:
+    void setC() { cout << "Enter c: "; cin >> c; }
+    void getC() { cout << "c = " << c << endl;    }
+};
+
+void demo_multiple_inheritance() {
+    cout << "\n--- Multiple Inheritance ---" << endl;
+    Child obj;
+    obj.setC();  obj.getC();
+    obj.setA();  obj.getA();
+    obj.setB();  obj.getB();
+}
+
+
+// ========================================================
+// 3. MULTILEVEL INHERITANCE
+// ========================================================
+// Chain: A → B → C (Grandparent → Parent → Child)
+
+class GrandParent {
+private:
+    int a;
+protected:
+    int b;
+public:
+    int c;
+    void setA()  { a = 50; }
+    void getA()  { cout << "a = " << a << endl; }
+};
+
+class Parent : public GrandParent {
+private:
+    int x;
+protected:
+    int y;
+public:
+    int z;
+    void setXYB() {
+        x = 10;  y = 20;  b = 30;
+        // a = 55;  // ❌ private in GrandParent
+    }
+    void getXYB() {
+        cout << "x=" << x << " y=" << y << " b=" << b << endl;
+    }
+};
+
+class GrandChild : public Parent {
+private:
+    int g;
+protected:
+    int h;
+public:
+    int i;
+    void setGHI() { g = 100; h = 200; i = 300; }
+    void getGHI() { cout << "g=" << g << " h=" << h << " i=" << i << endl; }
+};
+
+void demo_multilevel_inheritance() {
+    cout << "\n--- Multilevel Inheritance ---" << endl;
+    GrandChild O1;
+    cout << "Size of object: " << sizeof(O1) << " bytes" << endl;
+
+    O1.z = 100;
+    O1.c = 200;
+    O1.setXYB();
+    O1.setA();
+    O1.getXYB();
+    O1.getA();
+    O1.setGHI();
+    O1.getGHI();
+}
+
+
+// ========================================================
+// MAIN
+// ========================================================
+
+int main() {
+    demo_public_inheritance();
+    demo_multilevel_inheritance();
+    // Uncomment below for input-based demo:
+    // demo_multiple_inheritance();
+
+    return 0;
+}

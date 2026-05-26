@@ -1,0 +1,49 @@
+/*
+ * Task 2: Area Calculator — Constructor Overloading
+ * -------------------------------------------------------
+ * Concept: Constructor Overloading with different shapes
+ * The same class "Area" handles 4 different shapes:
+ *   - Square     (1 parameter: side)
+ *   - Rectangle  (2 int parameters: length, breadth)
+ *   - Circle     (2 double parameters: pi, radius)
+ *   - Triangle   (3 int parameters: sides a, b, c using Heron's formula)
+ * C++ automatically selects the right constructor based on argument types.
+ */
+
+#include <iostream>
+#include <cmath>    // Required for sqrt() function
+using namespace std;
+
+class Area {
+public:
+    // Constructor for Square — 1 integer argument
+    Area(int side) {
+        cout << "Area of Square: " << side * side << endl;
+    }
+
+    // Constructor for Rectangle — 2 integer arguments
+    Area(int length, int breadth) {
+        cout << "Area of Rectangle: " << length * breadth << endl;
+    }
+
+    // Constructor for Circle — 2 double arguments (pi, radius)
+    Area(double pi, double r) {
+        cout << "Area of Circle: " << pi * r * r << endl;
+    }
+
+    // Constructor for Triangle using Heron's Formula — 3 integer arguments
+    Area(int a, int b, int c) {
+        double s = (a + b + c) / 2.0;                          // Semi-perimeter
+        double area = sqrt(s * (s - a) * (s - b) * (s - c));  // Heron's formula
+        cout << "Area of Triangle: " << area << endl;
+    }
+};
+
+int main() {
+    Area square(4);                  // Calls 1-int constructor  → Square
+    Area rectangle(5, 6);           // Calls 2-int constructor  → Rectangle
+    Area circle(3.14159, 2.0);      // Calls 2-double constructor → Circle
+    Area triangle(3, 4, 5);         // Calls 3-int constructor  → Triangle (right-angled)
+
+    return 0;
+}

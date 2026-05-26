@@ -1,0 +1,50 @@
+/*
+ * Task 3: Constructor Basics — Default & Parameterized
+ * -------------------------------------------------------
+ * Concept: How constructors work in memory
+ * - A constructor is automatically called when an object is created.
+ * - It allocates memory and initializes values.
+ * - Here we demonstrate both default and parameterized constructors.
+ */
+
+#include <iostream>
+using namespace std;
+
+class Test {
+private:
+    int x;  // Private data member
+
+public:
+    // Default Constructor — called when no argument is provided
+    Test() {
+        cout << "Default Constructor: Object has been created." << endl;
+        cout << "Memory allocated. x = " << x << " (uninitialized)" << endl;
+        x = 10;  // Initialize x
+        cout << "Memory initialized: x = " << x << endl;
+    }
+
+    // Parameterized Constructor — called when an argument is provided
+    Test(int a) {
+        cout << "Parameterized Constructor: Object with argument created." << endl;
+        cout << "Memory allocated. x = " << x << " (uninitialized)" << endl;
+        x = a;   // Initialize x with given value
+        cout << "Memory initialized: x = " << x << endl;
+    }
+
+    // Set x using input
+    void setX() {
+        cin >> x;
+    }
+
+    // Display x
+    void getX() {
+        cout << "x = " << x << endl;
+    }
+};
+
+int main() {
+    Test O1;        // Calls Default Constructor
+    Test O2(20);    // Calls Parameterized Constructor
+
+    return 0;
+}

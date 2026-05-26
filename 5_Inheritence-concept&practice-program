@@ -1,0 +1,128 @@
+/*
+ *  Inheritance Examples
+ * Inheritence is giving the parent (data member and member function ) access to child class. 
+ * -------------------------------------------------------
+ * Example 1: Person → Student (Single Inheritance)
+ * Example 2: simple → complex (Method Overriding in Inheritance)
+ * Example 3: Computer → Laptop (Inheritance with constructors)
+ *
+ * Key concept in Example 1:
+ *   cin.ignore() is used after cin >> id to flush the leftover
+ *   newline character from the buffer, so cin.getline() works correctly.
+ */
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+// ========================================================
+// Example 1: Person → Student
+// ========================================================
+
+class Person {
+private:
+    int  id;
+    char name[34];
+    char address[150];
+
+public:
+    // Default constructor initializes to empty
+    Person() { id = 0; name[0] = '\0'; address[0] = '\0'; }
+
+    void getdata() {
+        cout << "Enter ID: ";
+        cin >> id;
+        cin.ignore();   // Flush leftover newline before getline()
+        cout << "Enter Name: ";
+        cin.getline(name, 34);
+        cout << "Enter Address: ";
+        cin.getline(address, 150);
+    }
+
+    void readdata() {
+        cout << "ID:      " << id      << endl;
+        cout << "Name:    " << name    << endl;
+        cout << "Address: " << address << endl;
+    }
+};
+
+class StudentPerson : public Person {
+private:
+    int roll, marks;
+
+public:
+    StudentPerson() { roll = 0; marks = 0; }
+
+    void data() {
+        cout << "Enter Roll No: "; cin >> roll;
+        cout << "Enter Marks:   "; cin >> marks;
+    }
+
+    void redata() {
+        cout << "Roll:  " << roll  << endl;
+        cout << "Marks: " << marks << endl;
+    }
+};
+
+
+// ========================================================
+// Example 2: Simple → Complex (Function Overriding)
+// ========================================================
+// The derived class overrides methods to add input validation.
+
+class SimpleCalc {
+protected:
+    int a, b;   // Protected so derived class can access
+
+public:
+    SimpleCalc() { a = b = 0; }
+
+    void input() {
+        cout << "Enter 1st value: "; cin >> a;
+        cout << "Enter 2nd value: "; cin >> b;
+    }
+
+    void add()      { cout << "Add:      " << a + b << endl; }
+    void sub()      { cout << "Subtract: " << a - b << endl; }
+    void multiply() { cout << "Multiply: " << a * b << endl; }
+    void divi()     { cout << "Divide:   " << a / b << endl; }
+};
+
+class ComplexCalc : public SimpleCalc {
+public:
+    // Override with input validation (only positive numbers allowed)
+    void add() {
+        if (a <= 0 || b <= 0) cout << "Invalid input." << endl;
+        else SimpleCalc::add();   // Call parent version
+    }
+    void sub() {
+        if (a <= 0 || b <= 0) cout << "Invalid input." << endl;
+        else SimpleCalc::sub();
+    }
+    void multiply() {
+        if (a <= 0 || b <= 0) cout << "Invalid input." << endl;
+        else SimpleCalc::multiply();
+    }
+    void divi() {
+        if (a <= 0 || b <= 0) cout << "Invalid input." << endl;
+        else SimpleCalc::divi();
+    }
+};
+
+
+// ========================================================
+// MAIN
+// ========================================================
+
+int main() {
+    // Example 2 demo
+    cout << "=== Complex Calculator ===" << endl;
+    ComplexCalc calc;
+    calc.input();
+    calc.add();
+    calc.sub();
+    calc.multiply();
+    calc.divi();
+
+    return 0;
+}

@@ -1,0 +1,74 @@
+/*
+ * Assignment: Templates
+ * -------------------------------------------------------
+ * Covers:
+ *   Q1: Find smallest of 3 values using 3-type template
+ *   Q2: Reverse display of 3 values using 3-type template
+ *   Q3: Find max element in an array using template
+ */
+
+#include <iostream>
+using namespace std;
+
+// ========================================================
+// Q1: Find Smallest — Multi-Type Template
+// ========================================================
+// Uses three different template types (a, b, c) for flexibility.
+
+template<class A, typename B, class C>
+A smallest(A a1, B b1, C c1) {
+    A minVal = a1;
+    if (b1 < minVal) minVal = (A)b1;  // Cast to return type A
+    if (c1 < minVal) minVal = (A)c1;
+    return minVal;
+}
+
+// ========================================================
+// Q2: Reverse Display — Multi-Type Template
+// ========================================================
+
+template<typename A, class B, class C>
+void reverseDisplay(A a1, B b1, C c1) {
+    cout << c1 << "\t" << b1 << "\t" << a1 << endl;
+}
+
+// ========================================================
+// Q3: Find Max in Array — Template Function
+// ========================================================
+
+template<class T>
+T findMax(T arr[], int size) {
+    T maxVal = arr[0];
+    cout << "Array: ";
+    for (int i = 0; i < size; i++) {
+        cout << arr[i] << "\t";
+        if (maxVal < arr[i]) maxVal = arr[i];
+    }
+    cout << endl;
+    return maxVal;
+}
+
+// ========================================================
+// MAIN
+// ========================================================
+
+int main() {
+    // Q1
+    cout << "=== Q1: Smallest ===" << endl;
+    cout << "Smallest of (4, 5, 7)      = " << smallest(4, 5, 7)     << endl;
+    cout << "Smallest of (2.3, 2.2, 7)  = " << smallest(2.3, 2.2, 7) << endl;
+
+    // Q2
+    cout << "\n=== Q2: Reverse Display ===" << endl;
+    reverseDisplay(5, 'S', 7.7);
+    reverseDisplay('A', 7, 0.6);
+
+    // Q3
+    cout << "\n=== Q3: Max in Array ===" << endl;
+    int    arr1[] = {1, 2, 3, 4, 5};
+    double arr2[] = {2.2, 3.5, 5.6};
+    cout << "Max (int):    " << findMax(arr1, 5) << endl;
+    cout << "Max (double): " << findMax(arr2, 3) << endl;
+
+    return 0;
+}

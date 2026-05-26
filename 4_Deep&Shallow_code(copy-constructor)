@@ -1,0 +1,126 @@
+/*
+ *  Deep Copy vs Shallow Copy
+ * -------------------------------------------------------
+ * Concept: Copy Constructors — Shallow vs Deep
+ *
+ * SHALLOW COPY:
+ *   - Copies the pointer address (not the value it points to).
+ *   - Both objects share the SAME memory location.
+ *   - Changing one object's pointer value affects the other!
+ *   - This is DANGEROUS and leads to bugs.
+ *
+ * DEEP COPY:
+ *   - Allocates NEW memory for the copied object.
+ *   - Copies the actual VALUE from the original.
+ *   - Both objects have INDEPENDENT memory.
+ *   - Changing one does NOT affect the other.
+ */
+
+#include <iostream>
+using namespace std;
+
+// ==================== SHALLOW COPY ====================
+
+class Shallow {
+private:
+    int x, y;
+    int* ptr;  // Pointer member — core of shallow vs deep copy
+
+public:
+    // Parameterized Constructor
+    Shallow(int x1, int y1, int z1) {
+        x   = x1;
+        y   = y1;
+        ptr = new int;   // Allocate memory on heap
+        *ptr = z1;       // Store value in allocated memory
+    }
+
+    // Shallow Copy Constructor
+    // Problem: copies the ADDRESS of ptr, not the value
+    Shallow(const Shallow& obj) {
+        x   = obj.x;
+        y   = obj.y;
+        ptr = obj.ptr;  // Both objects now point to the SAME memory!
+    }
+
+    void Display() {
+        cout << "x = " << x << " | y = " << y << " | *ptr = " << *ptr << endl;
+    }
+
+    // Change all values
+    void change(int x2, int y2, int z2) {
+        x    = x2;
+        y    = y2;
+        *ptr = z2;  // This also changes obj2's value (shared memory!)
+    }
+};
+
+// ==================== DEEP COPY ====================
+
+class Deep {
+private:
+    int x, y;
+    int* ptr;
+
+public:
+    // Parameterized Constructor
+    Deep(int x1, int y1, int z1) {
+        x   = x1;
+        y   = y1;
+        ptr = new int;
+        *ptr = z1;
+    }
+
+    // Deep Copy Constructor
+    // Fix: allocate new memory and copy the value
+    Deep(const Deep& obj) {
+        x    = obj.x;
+        y    = obj.y;
+        ptr  = new int;       //  Allocate SEPARATE memory
+        *ptr = *(obj.ptr);    //  Copy the VALUE (not the address)
+    }
+
+    void Display() {
+        cout << "x = " << x << " | y = " << y << " | *ptr = " << *ptr << endl;
+    }
+
+    void change(int x2, int y2, int z2) {
+        x    = x2;
+        y    = y2;
+        *ptr = z2;
+    }
+};
+
+// ==================== MAIN ====================
+
+int main() {
+
+    // --- Demonstrating SHALLOW Copy ---
+    cout << "===== SHALLOW COPY =====" << endl;
+    Shallow sObj1(10, 20, 30);
+    cout << "sObj1 (initial):      "; sObj1.Display();
+
+    Shallow sObj2 = sObj1;   // Shallow copy
+    cout << "sObj2 (copy of sObj1): "; sObj2.Display();
+
+    sObj1.change(100, 200, 300);
+    cout << "\nAfter changing sObj1:" << endl;
+    cout << "sObj1: "; sObj1.Display();
+    cout << "sObj2: "; sObj2.Display();  //  ptr value also changed!
+
+    cout << "\n===== DEEP COPY =====" << endl;
+
+    // --- Demonstrating DEEP Copy ---
+    Deep dObj1(10, 20, 30);
+    cout << "dObj1 (initial):      "; dObj1.Display();
+
+    Deep dObj2 = dObj1;   // Deep copy
+    cout << "dObj2 (copy of dObj1): "; dObj2.Display();
+
+    dObj1.change(100, 200, 300);
+    cout << "\nAfter changing dObj1:" << endl;
+    cout << "dObj1: "; dObj1.Display();
+    cout << "dObj2: "; dObj2.Display();  // dObj2 remains unchanged
+
+    return 0;
+}

@@ -1,0 +1,146 @@
+/*
+ *  C++ Templates
+ * -------------------------------------------------------
+ * Concept: Templates allow you to write ONE function or class
+ * that works with MULTIPLE data types (int, float, double, char, etc.)
+ *
+ * Without templates:
+ *   You'd need separate functions for int, float, double — very repetitive.
+ *
+ * With templates:
+ *   One function handles all data types automatically at compile time.
+ *
+ * Syntax:
+ *   template<typename T>    or    template<class T>
+ *   T functionName(T arg) { ... }
+ *
+ * Programs in this file:
+ *   1. display()         — print value and its size
+ *   2. abs()             — absolute value for any type
+ *   3. display(x, y)     — two-parameter template
+ *   4. calc class        — template class for arithmetic
+ *   5. findSmallest()    — find smallest of 3 values
+ *   6. displayReverse()  — print 3 values in reverse
+ */
+
+#include <iostream>
+using namespace std;
+
+
+// ========================================================
+// 1. Function Template: display value and size
+// ========================================================
+
+template<class T>
+void display(T x) {
+    cout << "Value: " << x << " | Size: " << sizeof(x) << " bytes" << endl;
+}
+
+
+// ========================================================
+// 2. Function Template: Absolute Value
+// ========================================================
+// Works for int, long, double — any numeric type
+
+template<class T>
+T absValue(T n) {
+    return (n < 0) ? -1 * n : n;  // If negative, flip sign
+}
+
+
+// ========================================================
+// 3. Two-Parameter Template
+// ========================================================
+
+template<class T1, class T2>
+void displayTwo(T1 x, T2 y) {
+    cout << "1st: " << x << " | 2nd: " << y << endl;
+}
+
+
+// ========================================================
+// 4. Template Class: Calculator
+// ========================================================
+
+template<class A_Type>
+class Calc {
+public:
+    // Multiply two values of the same type
+    A_Type multiply(A_Type x, A_Type y) { return x * y; }
+
+    // Add two values of the same type
+    A_Type add(A_Type x, A_Type y)      { return x + y; }
+};
+
+
+// ========================================================
+// 5. Function Template: Find Smallest of Three
+// ========================================================
+
+template<class T>
+T findSmallest(T a, T b, T c) {
+    T smallest = a;
+    if (b < smallest) smallest = b;
+    if (c < smallest) smallest = c;
+    return smallest;
+}
+
+
+// ========================================================
+// 6. Function Template: Display in Reverse
+// ========================================================
+
+template<class T>
+void displayReverse(T a, T b, T c) {
+    cout << c << "\t" << b << "\t" << a << endl;
+}
+
+
+// ========================================================
+// MAIN — Demonstrating all templates
+// ========================================================
+
+int main() {
+
+    // 1. Display with size
+    cout << "=== display() ===" << endl;
+    display(21);
+    display(2.51);
+    display('A');
+
+    // 2. Absolute value
+    cout << "\n=== absValue() ===" << endl;
+    cout << "abs(-6)       = " << absValue(-6)       << endl;
+    cout << "abs(-80000L)  = " << absValue(-80000L)  << endl;
+    cout << "abs(-10.15)   = " << absValue(-10.15)   << endl;
+
+    // 3. Two parameter template
+    cout << "\n=== displayTwo() ===" << endl;
+    displayTwo(21, "Sultani");
+    displayTwo(83.5, 'E');
+
+    // 4. Template class
+    cout << "\n=== Calc<T> class ===" << endl;
+    Calc<int>    intCalc;
+    cout << "int add(5,3)       = " << intCalc.add(5, 3)       << endl;
+    cout << "int multiply(5,3)  = " << intCalc.multiply(5, 3)  << endl;
+
+    Calc<float>  floatCalc;
+    cout << "float add(5.5,3.2) = " << floatCalc.add(5.5f, 3.2f) << endl;
+
+    Calc<double> doubleCalc;
+    cout << "double add(10.55,20.45) = " << doubleCalc.add(10.55, 20.45) << endl;
+
+    // 5. Find smallest
+    cout << "\n=== findSmallest() ===" << endl;
+    cout << "Smallest of (5, 3, 8)          = " << findSmallest(5, 3, 8)         << endl;
+    cout << "Smallest of (2.5, 7.1, 1.3)    = " << findSmallest(2.5, 7.1, 1.3)  << endl;
+    cout << "Smallest of ('Z', 'A', 'M')    = " << findSmallest('Z', 'A', 'M')  << endl;
+
+    // 6. Reverse display
+    cout << "\n=== displayReverse() ===" << endl;
+    displayReverse(10, 20, 30);
+    displayReverse(1.1, 2.2, 3.3);
+
+    return 0;
+}
