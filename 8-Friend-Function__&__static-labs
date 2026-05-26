@@ -1,0 +1,139 @@
+/*
+ *Friend Classes, Functions & Static Members
+ * =====================================================
+ * PRE-LAB TASKS
+ *
+ * Task 01: Complex Number Addition using Friend Function
+ * Task 02: Prime Sum — Express a number as sum of two primes
+ *
+ * KEY CONCEPT — Friend Function:
+ *   A friend function is declared INSIDE a class using the keyword 'friend',
+ *   but it is defined OUTSIDE the class. It can access private and protected
+ *   members of the class even though it is NOT a member of the class.
+ *
+ *   Syntax inside class:
+ *       friend returnType functionName(ClassName obj);
+ */
+
+#include <iostream>
+using namespace std;
+
+
+// ============================================================
+// Task 01: Add Two Complex Numbers using Friend Function
+// ============================================================
+/*
+ * A complex number has two parts:
+ *   real part      → the normal number  (e.g., 1)
+ *   imaginary part → followed by 'i'    (e.g., 4i)
+ * So  1 + 4i  is a complex number.
+ *
+ * To add:  (1+4i) + (5+8i) = (1+5) + (4+8)i = 6 + 12i
+ */
+
+class Complex {
+private:
+    int real;   // Real part of the complex number
+    int imag;   // Imaginary part
+
+public:
+    // Parameterized constructor to set values
+    Complex(int r = 0, int i = 0) : real(r), imag(i) {}
+
+    // Declare friend function — it can access private members
+    friend Complex addComplex(Complex c1, Complex c2);
+
+    // Display the complex number in format "a + bi"
+    void display() {
+        if (imag < 0)
+            cout << real << " - " << -imag << "i" << endl;
+        else
+            cout << real << " + " << imag << "i" << endl;
+    }
+};
+
+// Friend function definition — accesses private members of Complex
+Complex addComplex(Complex c1, Complex c2) {
+    return Complex(c1.real + c2.real, c1.imag + c2.imag);
+}
+
+void task01_complexNumbers() {
+    cout << "===== Task 01: Complex Number Addition =====" << endl;
+
+    Complex c1(1, 4);   // 1 + 4i
+    Complex c2(5, 8);   // 5 + 8i
+
+    cout << "First number is:  "; c1.display();
+    cout << "Second number is: "; c2.display();
+
+    Complex result = addComplex(c1, c2);
+    cout << "Result is: ";        result.display();
+}
+
+
+// ============================================================
+// Task 02: Prime Sum — using Friend Function
+// ============================================================
+/*
+ * Goal: Check if a number N can be expressed as sum of two prime numbers.
+ * Example: 20 = 3 + 17  and  20 = 7 + 13
+ *
+ * Strategy:
+ *   - isPrime() checks if a number is prime (friend function).
+ *   - We loop i from 2 to N/2, and if both i and (N-i) are prime,
+ *     we print that combination.
+ */
+
+class PrimeChecker {
+private:
+    int number;  // The number to check
+
+public:
+    PrimeChecker(int n) : number(n) {}
+
+    // Declare isPrime as friend so it can access private 'number'
+    friend bool isPrime(int n);
+
+    // Checks all prime pair combinations
+    void findPrimePairs() {
+        bool found = false;
+        for (int i = 2; i <= number / 2; i++) {
+            if (isPrime(i) && isPrime(number - i)) {
+                cout << number << " = " << i << " + " << (number - i) << endl;
+                found = true;
+            }
+        }
+        if (!found)
+            cout << number << " cannot be expressed as sum of two primes." << endl;
+    }
+};
+
+// Friend function: checks if a number is prime
+bool isPrime(int n) {
+    if (n < 2) return false;
+    for (int i = 2; i * i <= n; i++) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
+void task02_primeSum() {
+    cout << "\n===== Task 02: Prime Sum =====" << endl;
+    int n;
+    cout << "Input a positive integer: ";
+    cin >> n;
+
+    PrimeChecker pc(n);
+    pc.findPrimePairs();
+}
+
+
+// ============================================================
+// MAIN
+// ============================================================
+
+int main() {
+    task01_complexNumbers();
+    task02_primeSum();
+    return 0;
+}
