@@ -1,0 +1,328 @@
+/*
+ *  — Advanced Operator Overloading
+ * =====================================================
+ * Pre-Lab  Task 01: BigInt — unary ++ and -- operators
+ * In-Lab   Task 01: Students GPA — dynamic memory allocation
+ * In-Lab   Task 02: Cast Complex Numbers — cast operator overload
+ * In-Lab   Task 03: Polynomial — function call operator overload
+ * Post-Lab Task 01: Matrix 2D → 1D — cast operator overload
+ *
+ * KEY CONCEPTS:
+ *   Unary Operator Overloading:
+ *       void operator++() {}        ← prefix  (++obj)
+ *       void operator++(int) {}     ← postfix (obj++)  [int is a dummy param]
+ *
+ *   Cast Operator Overloading:
+ *       operator string() const {}  ← converts object to string
+ *       operator double() const {}  ← converts object to double
+ *
+ *   Function Call Operator:
+ *       ReturnType operator()(params) {}  ← lets you call obj(args)
+ *
+ *   Dynamic Memory:
+ *       int* p = new int;    ← allocates on heap
+ *       delete p;            ← frees memory (must do this!)
+ *       int* arr = new int[n];
+ *       delete[] arr;
+ */
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>    // For stringstream in cast operator
+#include <cmath>      // For pow()
+using namespace std;
+
+
+// ============================================================
+// Pre-Lab Task 01: BigInt — Unary ++ and --
+// ============================================================
+/*
+ * BigInt stores a large integer as an array of digits in REVERSE.
+ * Example: "12345" → stored as {5, 4, 3, 2, 1}
+ * This makes incrementing/decrementing easier (start from index 0).
+ */
+
+class BigInt {
+private:
+    vector<int> digits;  // Digits stored in REVERSE order (LSB first)
+
+    // Helper: construct from a string
+    void fromString(const string& s) {
+        digits.clear();
+        for (int i = (int)s.size() - 1; i >= 0; i--)
+            digits.push_back(s[i] - '0');
+    }
+
+public:
+    // Constructor from string
+    BigInt(const string& s) { fromString(s); }
+
+    // Pre-increment: ++obj → increments and returns updated object
+    BigInt& operator++() {
+        int carry = 1;
+        for (int i = 0; i < (int)digits.size() && carry; i++) {
+            digits[i] += carry;
+            carry      = digits[i] / 10;
+            digits[i] %= 10;
+        }
+        if (carry) digits.push_back(carry);  // New digit if overflow
+        return *this;
+    }
+
+    // Pre-decrement: --obj → decrements and returns updated object
+    BigInt& operator--() {
+        int borrow = 1;
+        for (int i = 0; i < (int)digits.size() && borrow; i++) {
+            digits[i] -= borrow;
+            if (digits[i] < 0) { digits[i] += 10; borrow = 1; }
+            else                 borrow = 0;
+        }
+        // Remove leading zero if any
+        while (digits.size() > 1 && digits.back() == 0)
+            digits.pop_back();
+        return *this;
+    }
+
+    // Display the number
+    void display() const {
+        for (int i = (int)digits.size() - 1; i >= 0; i--)
+            cout << digits[i];
+    }
+};
+
+void prelab_bigInt() {
+    cout << "===== Pre-Lab Task 01: BigInt =====" << endl;
+
+    BigInt b1("123456789");
+    BigInt b2 = ++b1;   // Pre-increment
+    BigInt b3 = --b1;   // Pre-decrement (back to original)
+
+    cout << "b1 (original):   "; b1.display(); cout << endl;
+    cout << "b2 (++b1):       "; b2.display(); cout << endl;
+    cout << "b3 (--b1):       "; b3.display(); cout << endl;
+}
+
+
+// ============================================================
+// In-Lab Task 01: Students GPA — Dynamic Memory
+// ============================================================
+/*
+ * KEY CONCEPT — Dynamic Memory:
+ *   new int[n] allocates an array of n integers on the heap.
+ *   delete[] arr frees that memory when done.
+ *   Always delete what you new — otherwise you have a memory leak.
+ */
+
+void task01_studentsGPA() {
+    cout << "\n===== In-Lab Task 01: Students GPA (Dynamic Memory) =====" << endl;
+
+    int n;
+    cout << "Enter total number of students: ";
+    cin >> n;
+
+    // Dynamically allocate array on heap
+    float* gpa = new float[n];
+
+    cout << "Enter GPA of students." << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "Student" << i + 1 << ": ";
+        cin >> gpa[i];
+    }
+
+    cout << "\nDisplaying GPA of students." << endl;
+    for (int i = 0; i < n; i++)
+        cout << "Student" << i + 1 << " : " << gpa[i] << endl;
+
+    //  Release memory — very important
+    delete[] gpa;
+    gpa = NULL;  // Good practice: nullify pointer after delete
+    cout << "[Memory released successfully]" << endl;
+}
+
+
+// ============================================================
+// In-Lab Task 02: Cast Complex — cast operator overload
+// ============================================================
+/*
+ * KEY CONCEPT — Cast Operator:
+ *   operator string() const { ... }
+ *   This lets you write:  string s = myComplexObj;
+ *   C++ will automatically call this function to convert the object.
+ */
+
+class CastComplex {
+private:
+    double real;
+    double imag;
+
+public:
+    CastComplex(double r, double i) : real(r), imag(i) {}
+
+    // Overloaded cast operator: converts Complex to string "a + bi"
+    operator string() const {
+        stringstream ss;
+        if (imag < 0)
+            ss << real << " - " << -imag << "i";
+        else
+            ss << real << " + " << imag << "i";
+        return ss.str();
+    }
+
+    void display() const {
+        cout << (string)(*this) << endl;  // Uses cast operator
+    }
+};
+
+void task02_castComplex() {
+    cout << "\n===== In-Lab Task 02: Cast Complex Numbers =====" << endl;
+
+    CastComplex c1(3.5, 2.1);
+    CastComplex c2(5.0, -4.0);
+
+    // Convert to string using cast operator
+    string s1 = (string)c1;
+    string s2 = c2;   // Implicit cast
+
+    cout << "c1 as string: " << s1 << endl;
+    cout << "c2 as string: " << s2 << endl;
+}
+
+
+// ============================================================
+// In-Lab Task 03: Polynomial — function call operator ()
+// ============================================================
+/*
+ * KEY CONCEPT — Function Call Operator:
+ *   Overloading () lets you use an object like a function.
+ *   p(2.0) evaluates the polynomial at x = 2.0.
+ *
+ *   For polynomial: coef[0]*x^0 + coef[1]*x^1 + ... + coef[n]*x^n
+ */
+
+class Polynomial {
+private:
+    vector<double> coeffs;  // coeffs[i] = coefficient of x^i
+
+public:
+    // Constructor: takes a vector of coefficients
+    Polynomial(const vector<double>& c) : coeffs(c) {}
+
+    // Display polynomial
+    void display() const {
+        bool first = true;
+        for (int i = (int)coeffs.size() - 1; i >= 0; i--) {
+            if (coeffs[i] == 0) continue;
+            if (!first && coeffs[i] > 0) cout << " + ";
+            if (!first && coeffs[i] < 0) cout << " - ";
+            double val = (coeffs[i] < 0 && !first) ? -coeffs[i] : coeffs[i];
+            if (i == 0)      cout << val;
+            else if (i == 1) cout << val << "x";
+            else             cout << val << "x^" << i;
+            first = false;
+        }
+        if (first) cout << "0";
+        cout << endl;
+    }
+
+    // Function call operator: evaluate polynomial at x
+    // p(x) = coef[0] + coef[1]*x + coef[2]*x^2 + ...
+    double operator()(double x) const {
+        double result = 0;
+        for (int i = 0; i < (int)coeffs.size(); i++)
+            result += coeffs[i] * pow(x, i);
+        return result;
+    }
+};
+
+void task03_polynomialFunctionCall() {
+    cout << "\n===== In-Lab Task 03: Polynomial Function Call Operator =====" << endl;
+
+    // coeffs = {1, 2, 3} means: 1 + 2x + 3x^2
+    vector<double> c;
+    c.push_back(1);
+    c.push_back(2);
+    c.push_back(3);
+    Polynomial p(c);
+
+    cout << "Polynomial p = "; p.display();
+
+    double x = 2.0;
+    double result = p(x);   // Calls operator()
+    cout << "Result of evaluating polynomial for x = " << x
+         << ": " << result << endl;
+    // = 1 + 2*2 + 3*4 = 1 + 4 + 12 = 17
+}
+
+
+// ============================================================
+// Post-Lab Task 01: Matrix 2D → 1D — cast operator
+// ============================================================
+
+class Matrix2D {
+private:
+    int  rows, cols;
+    int** mat;
+
+public:
+    Matrix2D(int r, int c) : rows(r), cols(c) {
+        mat = new int*[rows];
+        for (int i = 0; i < rows; i++) {
+            mat[i] = new int[cols];
+            for (int j = 0; j < cols; j++)
+                mat[i][j] = i * cols + j + 1;  // Fill with 1,2,3,...
+        }
+    }
+
+    void display2D() const {
+        cout << "2D Matrix:" << endl;
+        for (int i = 0; i < rows; i++) {
+            cout << "  ";
+            for (int j = 0; j < cols; j++)
+                cout << mat[i][j] << "\t";
+            cout << endl;
+        }
+    }
+
+    // Cast operator: converts 2D matrix to a 1D vector
+    operator vector<int>() const {
+        vector<int> flat;
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < cols; j++)
+                flat.push_back(mat[i][j]);
+        return flat;
+    }
+
+    ~Matrix2D() {
+        for (int i = 0; i < rows; i++) delete[] mat[i];
+        delete[] mat;
+    }
+};
+
+void postlab_matrix2Dto1D() {
+    cout << "\n===== Post-Lab Task 01: Matrix 2D to 1D (Cast Operator) =====" << endl;
+
+    Matrix2D m(3, 3);
+    m.display2D();
+
+    // Convert to 1D vector using cast operator
+    vector<int> flat = m;   // Implicit cast
+
+    cout << "1D Vector: ";
+    for (int i = 0; i < flat.size(); i++) cout << flat[i] << " ";
+    cout << endl;
+}
+
+
+// ============================================================
+// MAIN
+// ============================================================
+
+int main() {
+    prelab_bigInt();
+    task01_studentsGPA();
+    task02_castComplex();
+    task03_polynomialFunctionCall();
+    postlab_matrix2Dto1D();
+    return 0;
+}
