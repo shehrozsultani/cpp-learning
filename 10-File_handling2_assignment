@@ -249,7 +249,7 @@ void prog7_studentDetails() {
 
 
 // ============================================================
-// MAIN — Run all assignment programs
+// MAIN  Run all assignment programs
 // ============================================================
 
 int main() {
