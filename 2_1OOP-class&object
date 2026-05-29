@@ -1,0 +1,101 @@
+/*
+ * -------------------------------------------------------
+ * Concept: Class definition, private/public members, and objects
+ *
+ * Program 1: Student class
+ * - Stores student name, roll number, and marks in 3 subjects.
+ * - Uses set_Data() to take input and get_Average() to display results.
+ *
+ * Program 2: Box class
+ * - Demonstrates private, protected, and public member access levels.
+ * - Uses member functions to access private data (length, breadth).
+ */
+
+// ==================== Program 1: Student Class ====================
+
+#include <iostream>
+using namespace std;
+
+class Student {
+private:
+    char name[10];         // Student name (private)
+    int roll_No;           // Roll number (private)
+    int m1, m2, m3;        // Marks in 3 subjects (private)
+    int total, average;    // Computed values (private)
+
+protected:
+    // Protected members can be accessed in derived classes
+
+public:
+    // Takes input from user
+    void set_Data() {
+        cout << "Enter student name: ";    cin >> name;
+        cout << "Enter roll no: ";         cin >> roll_No;
+        cout << "Enter marks (subject 1): "; cin >> m1;
+        cout << "Enter marks (subject 2): "; cin >> m2;
+        cout << "Enter marks (subject 3): "; cin >> m3;
+    }
+
+    // Calculates and displays average
+    void get_Average() {
+        cout << "\nStudent Name:    " << name    << endl;
+        cout << "Roll No:         " << roll_No  << endl;
+        cout << "Subject 1 Marks: " << m1       << endl;
+        cout << "Subject 2 Marks: " << m2       << endl;
+        cout << "Subject 3 Marks: " << m3       << endl;
+
+        total   = m1 + m2 + m3;
+        average = total / 3;
+        cout << "Average Marks:   " << average  << endl;
+    }
+};
+
+int main() {
+    Student S1, S2, S3;   // Create 3 student objects
+
+    S1.set_Data();  S1.get_Average();
+    S2.set_Data();  S2.get_Average();
+    S3.set_Data();  S3.get_Average();
+
+    return 0;
+}
+
+
+// ==================== Program 2: Box Class ====================
+/*
+#include <iostream>
+using namespace std;
+
+class Box {
+private:
+    int length;   // Private: only accessible inside the class
+    int breadth;  // Private: only accessible inside the class
+
+public:
+    int height;   // Public: accessible from outside the class
+
+    // Sets values of all dimensions
+    void setData(int l, int b, int h) {
+        length  = l;
+        breadth = b;
+        height  = h;
+    }
+
+    // Returns private member 'length'
+    int getLength()  { return length;  }
+
+    // Returns private member 'breadth'
+    int getBreadth() { return breadth; }
+};
+
+int main() {
+    Box b1;
+    b1.setData(10, 6, 5);
+
+    cout << "Length:  " << b1.getLength()  << endl;
+    cout << "Breadth: " << b1.getBreadth() << endl;
+    cout << "Height:  " << b1.height       << endl;  // Direct access (public)
+
+    return 0;
+}
+*/

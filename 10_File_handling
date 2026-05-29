@@ -1,0 +1,341 @@
+/*
+ * — File Handling in C++
+ * =====================================================
+ * This file covers ALL file handling concepts from the slides:
+ *
+ * Program 01:  Write integers to a text file
+ * Program 2:  Read integers from a text file
+ * Program 3:  Write a string to a text file
+ * Program 4:  Read a string from a text file
+ * Program 5:  Count vowels (upper + lower case) in a file
+ * Program 6:  Create file and read it back (combined)
+ * Program 7:  Copy one file to another
+ * Program 8:  Count words, lines, and file size using seekg/tellg
+ * Program 9:  Student record — write and read using file handling
+ *
+ * KEY CONCEPTS:
+ *
+ *   STREAMS:
+ *     ofstream  → Output stream — used to WRITE to files (creates/opens)
+ *     ifstream  → Input stream  — used to READ from files
+ *     fstream   → Both read and write
+ *
+ *   FILE STEPS:
+ *     1. Create stream object (ofstream / ifstream / fstream)
+ *     2. Open the file: obj.open("filename.txt")  OR  ofstream obj("filename.txt")
+ *     3. Read / Write using << and >>
+ *     4. Close: obj.close()
+ *
+ *   eof():
+ *     Returns true when end-of-file is reached.
+ *     Always PRIME the input (read once before loop) then check eof inside loop.
+ *
+ *   seekg / seekp:
+ *     seekg = "seek get"  → moves READ pointer  (used with ifstream)
+ *     seekp = "seek put"  → moves WRITE pointer  (used with ofstream)
+ *     seekg(0, ios::beg) → go to beginning of file
+ *     seekg(0, ios::end) → go to end of file
+ *     tellg()            → returns current position of read pointer (= file size when at end)
+ */
+
+#include <iostream>
+#include <fstream>    // Required for file handling
+#include <string>
+using namespace std;
+
+
+// ============================================================
+// Program 1: Write Integers to a Text File
+// ============================================================
+
+void prog1_writeIntegers() {
+    cout << "\n===== Program 1: Write Integers to File =====" << endl;
+
+    int i = 42, j = 100;
+
+    // Create ofstream object and open file
+    ofstream out("data_integers.txt");
+
+    if (!out) {
+        cout << "Error opening file!" << endl;
+        return;
+    }
+
+    out << i << " " << j;   // Write integers separated by space
+    out.close();
+
+    cout << "Integers " << i << " and " << j
+         << " written to 'data_integers.txt'" << endl;
+}
+
+
+// ============================================================
+// Program 2: Read Integers from a Text File
+// ============================================================
+
+void prog2_readIntegers() {
+    cout << "\n===== Program 2: Read Integers from File =====" << endl;
+
+    int i, j;
+    ifstream in("data_integers.txt");
+
+    if (!in) {
+        cout << "Error: 'data_integers.txt' not found. Run Program 1 first." << endl;
+        return;
+    }
+
+    in >> i >> j;
+    in.close();
+
+    cout << "Read from file: i=" << i << " | j=" << j << endl;
+}
+
+
+// ============================================================
+// Program 3: Write a String to a Text File
+// ============================================================
+
+void prog3_writeString() {
+    cout << "\n===== Program 3: Write String to File =====" << endl;
+
+    string sentence = "Allah is Great. File handling in C++ is powerful!";
+
+    ofstream obj("data_string.txt");
+
+    if (!obj) { cout << "Error opening file!" << endl; return; }
+
+    obj << sentence;
+    obj.close();
+
+    cout << "String written to 'data_string.txt'" << endl;
+}
+
+
+// ============================================================
+// Program 4: Read a String from a Text File
+// ============================================================
+
+void prog4_readString() {
+    cout << "\n===== Program 4: Read String from File =====" << endl;
+
+    string line;
+    ifstream obj("data_string.txt");
+
+    if (!obj) {
+        cout << "Error: 'data_string.txt' not found. Run Program 3 first." << endl;
+        return;
+    }
+
+    getline(obj, line);   // Read one full line
+    obj.close();
+
+    cout << "Read from file: " << line << endl;
+}
+
+
+// ============================================================
+// Program 5: Count Vowels in a File
+// ============================================================
+/*
+ * KEY: use obj.get(ch) to read one character at a time.
+ * Priming: read ONCE before the loop, then check eof() at top.
+ */
+
+void prog5_countVowels() {
+    cout << "\n===== Program 5: Count Vowels in File =====" << endl;
+
+    // First write test content to a file
+    ofstream writer("data_vowels.txt");
+    writer << "Object Oriented Programming is Amazing and Educational";
+    writer.close();
+
+    char ch;
+    int  lower = 0, upper = 0;
+
+    ifstream obj("data_vowels.txt");
+    if (!obj) { cout << "File error!" << endl; return; }
+
+    obj.get(ch);   // Priming read — get first character before loop
+
+    while (!obj.eof()) {
+        // Check lower-case vowels
+        if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u')
+            lower++;
+        // Check upper-case vowels
+        else if (ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U')
+            upper++;
+
+        obj.get(ch);   // Get next character
+    }
+    obj.close();
+
+    cout << "Lower-case vowels: " << lower << endl;
+    cout << "Upper-case vowels: " << upper << endl;
+    cout << "Total vowels:      " << lower + upper << endl;
+}
+
+
+// ============================================================
+// Program 6: Create File + Read It Back (Combined)
+// ============================================================
+
+void prog6_createAndRead() {
+    cout << "\n===== Program 6: Create and Read File =====" << endl;
+
+    // Write
+    ofstream MyFile("data_combined.txt");
+    MyFile << "Files can be tricky, but it is fun enough!";
+    MyFile.close();
+
+    // Read
+    string myText;
+    ifstream MyReadFile("data_combined.txt");
+
+    while (getline(MyReadFile, myText)) {
+        cout << myText << endl;   // Print each line from file
+    }
+
+    MyReadFile.close();
+}
+
+
+// ============================================================
+// Program 7: Copy One File to Another
+// ============================================================
+
+void prog7_copyFile() {
+    cout << "\n===== Program 7: Copy File =====" << endl;
+
+    // Create original file
+    ofstream orig("original.txt");
+    orig << "Line 1: C++ File Handling\n";
+    orig << "Line 2: Reading and Writing\n";
+    orig << "Line 3: Streams and Objects\n";
+    orig.close();
+
+    // Copy original to copy.txt
+    string line;
+    ifstream ini_file("original.txt");
+    ofstream out_file("copy.txt");
+
+    if (ini_file && out_file) {
+        while (getline(ini_file, line)) {
+            out_file << line << "\n";
+        }
+        cout << "Copy Finished! 'original.txt' → 'copy.txt'" << endl;
+    } else {
+        cout << "Cannot read file!" << endl;
+    }
+
+    ini_file.close();
+    out_file.close();
+
+    // Verify copy by reading it back
+    string verify;
+    ifstream check("copy.txt");
+    cout << "Contents of copy.txt:" << endl;
+    while (getline(check, verify)) cout << "  " << verify << endl;
+    check.close();
+}
+
+
+// ============================================================
+// Program 8: Count Words, Lines, File Size using seekg/tellg
+// ============================================================
+/*
+ * KEY CONCEPT — seekg / tellg:
+ *   seekg(0, ios::end) → move pointer to end of file
+ *   tellg()            → returns current byte position (= file size)
+ *   seekg(0, ios::beg) → move pointer back to start
+ */
+
+void prog8_countWordsLinesSize() {
+    cout << "\n===== Program 8: Word, Line & Size Count using seekg/tellg =====" << endl;
+
+    // Create test file
+    ofstream writer("data_count.txt");
+    writer << "This is line one\n";
+    writer << "This is line two with more words\n";
+    writer << "And a third line here\n";
+    writer.close();
+
+    int  lines = 1, words = 1;
+    long size;
+    char ch;
+
+    ifstream fin("data_count.txt");
+    if (!fin) { cout << "File error!" << endl; return; }
+
+    // Get file size
+    fin.seekg(0, ios::end);     // Move pointer to end
+    size = (long)fin.tellg();   // Position at end = file size in bytes
+    fin.seekg(0, ios::beg);     // Move pointer back to beginning
+
+    // Count words and lines character by character
+    fin.get(ch);   // Priming read
+    while (fin) {
+        if (ch == ' ' || ch == '\n') words++;
+        if (ch == '\n')              lines++;
+        fin.get(ch);
+    }
+    fin.close();
+
+    cout << "Lines: " << lines << endl;
+    cout << "Words: " << words << endl;
+    cout << "File size: " << size << " bytes" << endl;
+}
+
+
+// ============================================================
+// Program 9: Student Records — Write & Read
+// ============================================================
+
+struct StudentRecord {
+    char name[30];
+    int  rollNo;
+    float marks;
+};
+
+void prog9_studentRecords() {
+    cout << "\n===== Program 9: Student Records in File =====" << endl;
+
+    // Write 2 student records
+    ofstream out("students.txt");
+    StudentRecord s1 = {"Ali Ahmed", 101, 88.5f};
+    StudentRecord s2 = {"Sara Khan", 102, 92.0f};
+
+    out << s1.rollNo << " " << s1.marks << " " << s1.name << "\n";
+    out << s2.rollNo << " " << s2.marks << " " << s2.name << "\n";
+    out.close();
+
+    cout << "Student records written to 'students.txt'" << endl;
+
+    // Read back
+    cout << "\nReading from 'students.txt':" << endl;
+    string line;
+    ifstream in("students.txt");
+    while (getline(in, line)) {
+        cout << "  " << line << endl;
+    }
+    in.close();
+}
+
+
+// ============================================================
+// MAIN — Run all programs
+// ============================================================
+
+int main() {
+    prog1_writeIntegers();
+    prog2_readIntegers();
+    prog3_writeString();
+    prog4_readString();
+    prog5_countVowels();
+    prog6_createAndRead();
+    prog7_copyFile();
+    prog8_countWordsLinesSize();
+    prog9_studentRecords();
+
+    cout << "\n===== All File Handling Programs Completed! =====" << endl;
+    return 0;
+}
