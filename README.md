@@ -1,6 +1,6 @@
 #  C++ Object-Oriented Programming — Lab Tasks & Assignments
 
-> A complete collection of **C++ OOP lab exercises and assignments** from BS-IT (Session 2025–2029) at **Punjab University Gujranwala Campus**.  
+> A complete collection of **C++ OOP lab exercises and assignments** from BS-IT (Session 2025–2029) at **Punjab University Gujranwala Campus**. 
 > Topics covered: Classes, Constructors, Inheritance, Deep/Shallow Copy, Templates, and more.
 
 ---
